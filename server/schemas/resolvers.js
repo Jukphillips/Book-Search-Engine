@@ -30,25 +30,25 @@ const resolvers = {
                throw new AuthenticationError("No profile with those crednetials is found!")
            }
 
-           const correctPw = await User.isCorrectPassword(password)
+           const correctPw = await profile.isCorrectPassword(password)
 
            if(!correctPw) {
                throw new AuthenticationError("Incorrect password!")
            }
 
-           const token = signToken(profile)
-           return {token, profile}
+           const userToken = signToken(profile)
+           return {token: userToken, profile}
        },
 
         addUser: async (parent, {username, email, password }) => {
-            const user = await User.create({ username, emial, password});
+            const user = await User.create({ username, email, password});
 
             if(!user) {
                 throw new AuthenticationError("Something went wrong!")
             }
 
-            const token = signToken(profile)
-            return {token, profile}
+            const token = signToken(user)
+            return {token, user}
         },
 
         saveBook: async (parent, args, context ) => {
