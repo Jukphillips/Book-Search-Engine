@@ -22,9 +22,7 @@ const resolvers = {
     }, 
     Mutation: {
        login: async (parent, {email, username, password}) => {
-           const profile = await User.findOne({
-               $or: [{ username}, { email}]
-           })
+           const profile = await User.findOne({ email })
 
            if(!profile){
                throw new AuthenticationError("No profile with those crednetials is found!")
@@ -36,8 +34,8 @@ const resolvers = {
                throw new AuthenticationError("Incorrect password!")
            }
 
-           const userToken = signToken(profile)
-           return {token: userToken, profile}
+           const token = signToken(profile)
+           return {token, profile}
        },
 
         addUser: async (parent, {username, email, password }) => {
@@ -52,16 +50,15 @@ const resolvers = {
         },
 
         saveBook: async (parent, args, context ) => {
-            if(context.user){
-               const save = await User.findbyIdAndUpdate(
-                {_id: context.user._id},
-                {$addToSet: {savedBooks: args.input}},
-                {new: true, runValidators: true});
+            console.log(context.user)            
+            //    const save = await User.findbyIdAndUpdate(
+            //     {_id: context.user._id},
+            //     {$push: {savedBooks: bookData}},
+            //     {new: true, runValidators: true});
                 
-                return save
-                
-            }
-            throw new AuthenticationError("You need to be logged in!")
+            //     return save
+  
+
         },
 
         removeBook: async (parent, args, context) => {
